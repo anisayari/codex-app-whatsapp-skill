@@ -68,6 +68,15 @@ Then in the gateway CLI:
 3. ✅ Scan the QR
 4. 📟 Run `/status`
 
+## Remote Ops (Optional)
+
+If you expose the gateway HTTP API, you can also onboard/check status remotely:
+
+```bash
+~/.codex/skills/whatsapp-bridge/scripts/gateway_init.sh --url http://server:8080 --token <admin-token>
+~/.codex/skills/whatsapp-bridge/scripts/gateway_status.sh --url http://server:8080 --token <admin-token>
+```
+
 ## Smooth Onboarding Flow (Suggested)
 
 The skill expects an **OpenClaw-style** `/init` experience so the user explicitly accepts risk before any WhatsApp session starts.
@@ -99,6 +108,8 @@ Example risk notice copy:
 - `references/quickstart.md` — simplest end-to-end setup
 - `scripts/init_gateway.sh` — generate the gateway template project
 - `scripts/update_skill.sh` — update the skill installation via git
+- `scripts/gateway_init.sh` — call gateway `/init` then display the QR from `/qr`
+- `scripts/gateway_status.sh` — call gateway `/status`
 - `assets/gateway-template/` — the gateway project template (Node/TS)
 
 ## Usage Examples (Triggers)

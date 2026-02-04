@@ -26,6 +26,7 @@ Build a separate WhatsApp Web gateway (Baileys) that receives and sends WhatsApp
 ## Quick Start (Template)
 - Use `scripts/init_gateway.sh --path <output-dir>` to generate a ready-to-run gateway project from `assets/gateway-template`.
 - Deploy the generated gateway folder to a separate server, then run `/init` to authenticate.
+- If the gateway HTTP API is exposed, use `scripts/gateway_init.sh` and `scripts/gateway_status.sh` for remote onboarding and checks.
 
 Reference: `references/quickstart.md`.
 

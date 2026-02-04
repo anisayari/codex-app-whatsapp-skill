@@ -40,6 +40,12 @@ If HTTP is exposed:
 
 - `GET /health`
 - `GET /status` with `Authorization: Bearer <token>`
+- Or use the helper scripts:
+
+```bash
+scripts/gateway_init.sh --url http://server:8080 --token <token>
+scripts/gateway_status.sh --url http://server:8080 --token <token>
+```
 
 ## 6) Common Failure Modes
 
