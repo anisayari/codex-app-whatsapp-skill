@@ -15,13 +15,13 @@ Use this reference when the user wants an OpenClaw-style onboarding that starts 
 5. `failed`
 
 ## CLI Behavior (Example)
-- User runs `/init`
-- CLI shows risk notice and asks for confirmation
-- If user confirms, start Baileys and show QR
-- If user declines, exit with a clear message
+- ▶️ User runs `/init`
+- ⚠️ CLI shows risk notice and asks for confirmation
+- ✅ If user confirms, start Baileys and show QR
+- ❌ If user declines, exit with a clear message
 
 ## Example Copy (Risk Notice)
-"This gateway uses WhatsApp Web (non-official). It can be unstable and may lead to account restrictions. Use a dedicated number. Do you accept this risk? (yes/no)"
+"⚠️ This gateway uses WhatsApp Web (non-official). It can be unstable and may lead to account restrictions. Use a dedicated number. Do you accept this risk? (yes/no)"
 
 ## QR Display Guidance
 - Print the QR in the terminal using a QR library.

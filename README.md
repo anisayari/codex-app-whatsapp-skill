@@ -47,14 +47,14 @@ rm -rf ~/.codex/skills/whatsapp-bridge
 
 The skill expects an **OpenClaw-style** `/init` experience so the user explicitly accepts risk before any WhatsApp session starts.
 
-1. User runs `/init`
-2. Show a clear risk notice and ask for consent (yes/no)
-3. On acceptance, start Baileys and display the QR
-4. On decline, exit cleanly without starting WhatsApp
+1. ▶️ Run `/init`
+2. ⚠️ Show a clear risk notice and ask for consent (yes/no)
+3. ✅ On acceptance, start Baileys and display the QR
+4. ❌ On decline, exit cleanly without starting WhatsApp
 
 Example risk notice copy:
 
-"This gateway uses WhatsApp Web (non-official). It can be unstable and may lead to account restrictions. Use a dedicated number. Do you accept this risk? (yes/no)"
+"⚠️ This gateway uses WhatsApp Web (non-official). It can be unstable and may lead to account restrictions. Use a dedicated number. Do you accept this risk? (yes/no)"
 
 ## Skill Files
 
