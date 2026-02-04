@@ -34,6 +34,14 @@ Build a separate WhatsApp Web gateway (Baileys) that receives and sends WhatsApp
 Reference: `references/init-onboarding.md`.
 
 
+## CLI Commands (/update, /status)
+- Provide `/update` to pull the latest skill version from the GitHub repo.
+- Provide `/status` to display connection state, activation, and current number.
+- Keep outputs short and readable for terminal use.
+
+Reference: `references/cli-commands.md`.
+
+
 ## Message Pipeline Rules
 - Always ignore messages sent by the bot itself.
 - Deduplicate by message id and jid to avoid loops.
@@ -56,3 +64,4 @@ Reference: `references/init-onboarding.md`.
 - `references/ops-runbook.md` for deployment, restarts, and QR recovery.
 - `references/web-ui-bridge.md` for the optional web UI mirror.
 - `references/init-onboarding.md` for the `/init` onboarding flow and QR display.
+- `references/cli-commands.md` for `/update` and `/status` commands.

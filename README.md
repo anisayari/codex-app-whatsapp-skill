@@ -56,6 +56,12 @@ Example risk notice copy:
 
 "⚠️ This gateway uses WhatsApp Web (non-official). It can be unstable and may lead to account restrictions. Use a dedicated number. Do you accept this risk? (yes/no)"
 
+## CLI Commands (Suggested)
+
+- `/init` → start onboarding and show QR
+- `/update` → pull latest skill from the repo
+- `/status` → show connection status and current number
+
 ## Skill Files
 
 - `SKILL.md` — main instructions and workflow
