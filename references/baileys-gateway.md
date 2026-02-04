@@ -2,6 +2,13 @@
 
 Use this reference when building the non-official WhatsApp Web gateway with Baileys.
 
+## Fast Path (Recommended)
+
+Use the bundled template instead of re-implementing from scratch:
+
+- Generate a project: `scripts/init_gateway.sh --path <output-dir>`
+- Template source: `assets/gateway-template/`
+
 ## Preconditions
 - Use a dedicated phone number.
 - Keep the gateway on a separate server or repo.

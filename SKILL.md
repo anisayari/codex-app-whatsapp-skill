@@ -23,6 +23,19 @@ Build a separate WhatsApp Web gateway (Baileys) that receives and sends WhatsApp
 5. Add an LLM handler with per-JID state and message summarization.
 6. Add health checks, logs, and a QR re-auth flow.
 
+## Quick Start (Template)
+- Use `scripts/init_gateway.sh --path <output-dir>` to generate a ready-to-run gateway project from `assets/gateway-template`.
+- Deploy the generated gateway folder to a separate server, then run `/init` to authenticate.
+
+Reference: `references/quickstart.md`.
+
+## Skill Auto-Update (Local)
+- On skill start (or whenever the user asks), do a best-effort update check against GitHub.
+- If the user asks to “update the skill”, or types `update` / `/update`, run `scripts/update_skill.sh` to pull the latest version from GitHub.
+- If there are local changes, show them and ask whether to retry with `--force`.
+- After updating, re-open `SKILL.md` (instructions may have changed).
+
+Reference: `references/cli-commands.md`.
 
 ## OpenClaw-Style Onboarding (/init)
 - ▶️ Provide a `/init` command that starts the onboarding flow.
@@ -35,8 +48,8 @@ Reference: `references/init-onboarding.md`.
 
 
 ## CLI Commands (/update, /status)
-- Provide `/update` to pull the latest skill version from the GitHub repo.
-- Provide `/status` to display connection state, activation, and current number.
+- Provide `/status` to display connection state, activation, and current number (gateway runtime).
+- Optionally provide `/update` in the gateway runtime to update the gateway code via `git pull --ff-only`.
 - Keep outputs short and readable for terminal use.
 
 Reference: `references/cli-commands.md`.
@@ -65,3 +78,4 @@ Reference: `references/cli-commands.md`.
 - `references/web-ui-bridge.md` for the optional web UI mirror.
 - `references/init-onboarding.md` for the `/init` onboarding flow and QR display.
 - `references/cli-commands.md` for `/update` and `/status` commands.
+- `references/quickstart.md` for the simplest end-to-end setup.

@@ -1,27 +1,34 @@
-# CLI Commands Reference
+# Commands Reference (/update, /status, /init)
 
-Use this reference when implementing an OpenClaw-style CLI for the gateway.
+Use this reference when the user wants an OpenClaw-style onboarding experience with simple commands.
 
-## Commands
+This repo has **two contexts**:
+
+1. **Codex skill (local)**: update the skill itself.
+2. **Gateway runtime (server)**: start WhatsApp and check connection.
+
+## Codex Skill Commands (Local)
+
+### update or /update
+Goal: update the *skill* to the latest version from GitHub.
+
+Recommended behavior:
+- Run `scripts/update_skill.sh`.
+- If there are local changes, show them and ask whether to retry with `--force`.
+- If the update succeeds, re-open `SKILL.md` (instructions may have changed).
+
+## Gateway Commands (Server)
 
 ### /init
-Start onboarding, capture consent, then show QR.
+Goal: start onboarding, capture consent, then show the QR.
 
-### /update
-Pull the latest skill version from the GitHub repository.
-
-Behavior:
-- Run `git pull --ff-only` inside the skill folder.
-- If there are local changes, warn the user and require confirmation before pulling.
-
-Example flow:
-- User runs `/update`
-- CLI checks `git status --porcelain`
-- If clean: run pull and report the current commit
-- If dirty: show warning and ask for confirmation
+Recommended behavior:
+- Show a clear risk notice and ask for explicit consent (yes/no).
+- Only start Baileys and display the QR after consent is accepted.
+- If the user declines, exit cleanly and do not start WhatsApp.
 
 ### /status
-Show connection and session details.
+Goal: show whether the gateway is connected and which number is active.
 
 Minimum fields:
 - `connection`: connected | connecting | disconnected
@@ -30,6 +37,10 @@ Minimum fields:
 - `number`: human-readable phone number (if available)
 - `last_message_at`: ISO timestamp (if available)
 
-Notes:
-- If the client is not connected, show `active: no` and omit `jid/number`.
-- If multiple sessions are supported, list all active JIDs.
+### /update
+Goal: update the *gateway* code (optional).
+
+Recommended behavior:
+- If the gateway folder is a git repo, run `git pull --ff-only`.
+- If dirty, warn and require confirmation.
+- After update, tell the user to restart the process.

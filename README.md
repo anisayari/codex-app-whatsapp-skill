@@ -37,11 +37,36 @@ cd ~/.codex/skills/whatsapp-bridge
 git pull
 ```
 
+Or (recommended), run the updater script:
+
+```bash
+~/.codex/skills/whatsapp-bridge/scripts/update_skill.sh
+```
+
 ### Uninstall
 
 ```bash
 rm -rf ~/.codex/skills/whatsapp-bridge
 ```
+
+## Create A Gateway Server (Template)
+
+The skill includes a ready-to-run gateway template.
+
+```bash
+~/.codex/skills/whatsapp-bridge/scripts/init_gateway.sh --path ~/whatsapp-gateway
+cd ~/whatsapp-gateway
+cp .env.example .env
+npm install
+npm run dev
+```
+
+Then in the gateway CLI:
+
+1. ▶️ Run `/init`
+2. ⚠️ Accept risk (yes/no)
+3. ✅ Scan the QR
+4. 📟 Run `/status`
 
 ## Smooth Onboarding Flow (Suggested)
 
@@ -59,7 +84,7 @@ Example risk notice copy:
 ## CLI Commands (Suggested)
 
 - `/init` → start onboarding and show QR
-- `/update` → pull latest skill from the repo
+- `/update` → update via git (skill locally, gateway on the server)
 - `/status` → show connection status and current number
 
 ## Skill Files
@@ -70,6 +95,11 @@ Example risk notice copy:
 - `references/ops-runbook.md` — deployment, restarts, health checks
 - `references/web-ui-bridge.md` — optional web UI mirror
 - `references/init-onboarding.md` — `/init` flow + QR display guidance
+- `references/cli-commands.md` — `/update` and `/status` command UX
+- `references/quickstart.md` — simplest end-to-end setup
+- `scripts/init_gateway.sh` — generate the gateway template project
+- `scripts/update_skill.sh` — update the skill installation via git
+- `assets/gateway-template/` — the gateway project template (Node/TS)
 
 ## Usage Examples (Triggers)
 
