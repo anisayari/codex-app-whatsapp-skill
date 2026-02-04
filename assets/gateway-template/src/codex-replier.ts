@@ -15,9 +15,18 @@ interface ConversationFile {
   messages: StoredMessage[];
 }
 
+const MAX_HISTORY_LINES_CHARS = 8_000;
+const MAX_HISTORY_MESSAGE_CHARS = 600;
+
 function truncateText(text: string, maxChars: number): string {
   if (text.length <= maxChars) return text;
   return text.slice(0, Math.max(0, maxChars - 20)).trimEnd() + "\n…(truncated)";
+}
+
+function truncateForContext(text: string): string {
+  const trimmed = text.trim();
+  if (trimmed.length <= MAX_HISTORY_MESSAGE_CHARS) return trimmed;
+  return trimmed.slice(0, MAX_HISTORY_MESSAGE_CHARS - 20).trimEnd() + " …";
 }
 
 function hashJid(jid: string): string {
@@ -70,8 +79,22 @@ async function saveConversation(params: {
 function buildPrompt(params: { history: StoredMessage[]; userText: string }): string {
   const historyLines: string[] = [];
   if (params.history.length > 0) {
+    const selected: StoredMessage[] = [];
+    let totalChars = 0;
+
+    // Accumulate from newest to oldest until we hit a character budget.
+    for (let i = params.history.length - 1; i >= 0; i -= 1) {
+      const msg = params.history[i];
+      const content = truncateForContext(msg.content);
+      const line = `${msg.role === "user" ? "User" : "Assistant"}: ${content}`;
+      const nextTotal = totalChars + line.length + 1;
+      if (nextTotal > MAX_HISTORY_LINES_CHARS) break;
+      totalChars = nextTotal;
+      selected.unshift({ role: msg.role, content });
+    }
+
     historyLines.push("Conversation history (most recent last):");
-    for (const msg of params.history) {
+    for (const msg of selected) {
       historyLines.push(`${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`);
     }
     historyLines.push("");
