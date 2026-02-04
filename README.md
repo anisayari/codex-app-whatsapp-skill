@@ -4,6 +4,8 @@ A Codex skill for building a **non-official WhatsApp Web gateway** (Baileys) tha
 
 This mirrors an “OpenClaw-style” gateway: a lightweight WhatsApp relay that you can control and host yourself.
 
+**Status:** currently in development. Use at your own risk.
+
 ## What This Skill Covers
 
 - Baileys gateway setup with QR auth and reconnection
@@ -12,6 +14,7 @@ This mirrors an “OpenClaw-style” gateway: a lightweight WhatsApp relay that 
 - Conversation state + rolling summaries for LLMs
 - Ops runbook (health checks, restarts, QR recovery)
 - Optional web UI mirror (separate from Codex UI)
+- OpenClaw-style onboarding with `/init` and explicit consent
 
 ## Important Risk Note
 
@@ -40,6 +43,19 @@ git pull
 rm -rf ~/.codex/skills/whatsapp-bridge
 ```
 
+## Smooth Onboarding Flow (Suggested)
+
+The skill expects an **OpenClaw-style** `/init` experience so the user explicitly accepts risk before any WhatsApp session starts.
+
+1. User runs `/init`
+2. Show a clear risk notice and ask for consent (yes/no)
+3. On acceptance, start Baileys and display the QR
+4. On decline, exit cleanly without starting WhatsApp
+
+Example risk notice copy:
+
+"This gateway uses WhatsApp Web (non-official). It can be unstable and may lead to account restrictions. Use a dedicated number. Do you accept this risk? (yes/no)"
+
 ## Skill Files
 
 - `SKILL.md` — main instructions and workflow
@@ -47,6 +63,7 @@ rm -rf ~/.codex/skills/whatsapp-bridge
 - `references/openai-bridge.md` — LLM bridge + conversation state guidance
 - `references/ops-runbook.md` — deployment, restarts, health checks
 - `references/web-ui-bridge.md` — optional web UI mirror
+- `references/init-onboarding.md` — `/init` flow + QR display guidance
 
 ## Usage Examples (Triggers)
 

@@ -23,6 +23,17 @@ Build a separate WhatsApp Web gateway (Baileys) that receives and sends WhatsApp
 5. Add an LLM handler with per-JID state and message summarization.
 6. Add health checks, logs, and a QR re-auth flow.
 
+
+## OpenClaw-Style Onboarding (/init)
+- Provide a `/init` command that starts the onboarding flow.
+- Show a clear risk notice and require explicit user consent (yes/no) before starting WhatsApp.
+- Only generate and display the QR code after consent is accepted.
+- Keep the flow stateful (`awaiting_consent`, `awaiting_qr_scan`, `connected`).
+- If the user declines, exit cleanly and do not start Baileys.
+
+Reference: `references/init-onboarding.md`.
+
+
 ## Message Pipeline Rules
 - Always ignore messages sent by the bot itself.
 - Deduplicate by message id and jid to avoid loops.
@@ -44,3 +55,4 @@ Build a separate WhatsApp Web gateway (Baileys) that receives and sends WhatsApp
 - `references/openai-bridge.md` for the LLM call wrapper and conversation state pattern.
 - `references/ops-runbook.md` for deployment, restarts, and QR recovery.
 - `references/web-ui-bridge.md` for the optional web UI mirror.
+- `references/init-onboarding.md` for the `/init` onboarding flow and QR display.
