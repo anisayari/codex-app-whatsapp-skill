@@ -25,11 +25,11 @@ Build a separate WhatsApp Web gateway (Baileys) that receives and sends WhatsApp
 
 
 ## OpenClaw-Style Onboarding (/init)
-- Provide a `/init` command that starts the onboarding flow.
-- Show a clear risk notice and require explicit user consent (yes/no) before starting WhatsApp.
-- Only generate and display the QR code after consent is accepted.
-- Keep the flow stateful (`awaiting_consent`, `awaiting_qr_scan`, `connected`).
-- If the user declines, exit cleanly and do not start Baileys.
+- ▶️ Provide a `/init` command that starts the onboarding flow.
+- ⚠️ Show a clear risk notice and require explicit user consent (yes/no) before starting WhatsApp.
+- ✅ Only generate and display the QR code after consent is accepted.
+- 🧭 Keep the flow stateful (`awaiting_consent`, `awaiting_qr_scan`, `connected`).
+- ❌ If the user declines, exit cleanly and do not start Baileys.
 
 Reference: `references/init-onboarding.md`.
 
