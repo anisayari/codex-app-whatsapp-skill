@@ -22,6 +22,8 @@ export class StatusStore {
     this.snapshot = {
       state: "idle",
       active: false,
+      paired: false,
+      ownerJids: [],
       jid: null,
       number: null,
       pushName: null,
@@ -51,6 +53,14 @@ export class StatusStore {
       jid: params.jid,
       number: params.number,
       pushName: params.pushName,
+    };
+  }
+
+  setOwners(ownerJids: string[]): void {
+    this.snapshot = {
+      ...this.snapshot,
+      paired: ownerJids.length > 0,
+      ownerJids: ownerJids.slice(),
     };
   }
 
@@ -101,6 +111,9 @@ export class StatusStore {
       connection,
       active: this.snapshot.active,
     };
+
+    out.paired = this.snapshot.paired;
+    out.owner_jids = this.snapshot.ownerJids.slice();
 
     if (this.snapshot.jid) out.jid = this.snapshot.jid;
     if (this.snapshot.number) out.number = this.snapshot.number;

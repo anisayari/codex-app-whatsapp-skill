@@ -26,6 +26,9 @@ Recommended behavior:
 - Show a clear risk notice and ask for explicit consent (yes/no).
 - Only start Baileys and display the QR after consent is accepted.
 - If the user declines, exit cleanly and do not start WhatsApp.
+- If no `OWNER_*` allowlist is configured, require one-time pairing:
+  - Show a pairing code in the CLI.
+  - User sends `PAIR <code>` from their phone to the gateway number.
 
 ### /status
 Goal: show whether the gateway is connected and which number is active.
@@ -33,9 +36,16 @@ Goal: show whether the gateway is connected and which number is active.
 Minimum fields:
 - `connection`: connected | connecting | disconnected
 - `active`: yes | no
+- `paired`: yes | no
 - `jid`: WhatsApp JID (if connected)
 - `number`: human-readable phone number (if available)
 - `last_message_at`: ISO timestamp (if available)
+
+### WhatsApp In-Band Commands
+
+Recommended:
+- User sends `/status` on WhatsApp to get the same status output.
+- User sends `/help` to get a quick command list.
 
 ### /update
 Goal: update the *gateway* code (optional).

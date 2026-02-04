@@ -9,6 +9,7 @@ import pino from "pino";
 import type { Config } from "./config";
 import type { InboundMessage } from "./types";
 import { qrToAscii, printQrToTerminal } from "./qr";
+import { OwnerStore } from "./owner-store";
 import { StatusStore } from "./status-store";
 
 export interface QrSnapshot {
@@ -58,6 +59,7 @@ export class WhatsAppGateway {
   constructor(
     private readonly config: Config,
     private readonly status: StatusStore,
+    private readonly owners: OwnerStore,
     private readonly replier: (msg: InboundMessage) => Promise<string>
   ) {
     this.logger = pino({ level: config.logLevel });
@@ -69,6 +71,10 @@ export class WhatsAppGateway {
 
   getJid(): string | null {
     return this.status.getSnapshot().jid;
+  }
+
+  getPairingCode(): string {
+    return this.owners.getPairingCode();
   }
 
   async start(): Promise<void> {
@@ -119,6 +125,13 @@ export class WhatsAppGateway {
         });
 
         this.logger.info({ jid }, "Connected");
+
+        this.status.setOwners(this.owners.getOwnerJids());
+        if (!this.owners.isPaired()) {
+          this.logger.warn(
+            `Owner not paired yet. Send: PAIR ${this.owners.getPairingCode()} from your phone.`
+          );
+        }
       }
 
       if (update.connection === "close") {
@@ -173,21 +186,62 @@ export class WhatsAppGateway {
           message.message.extendedTextMessage?.text ||
           "";
 
-        if (!text.trim()) continue;
+        const trimmed = text.trim();
+        if (!trimmed) continue;
 
         const dedupeKey = `${jid}|${messageId}`;
         if (!this.markSeen(dedupeKey)) continue;
 
-        this.status.markMessageSeen();
+        const allowed = this.owners.isAllowed({ jid, allowGroups: this.config.allowGroups });
+        if (!allowed) {
+          const pairedNow = await this.owners.tryPair({ jid, text: trimmed });
+          if (pairedNow) {
+            this.status.setOwners(this.owners.getOwnerJids());
+            await this.sendText(
+              jid,
+              [
+                "✅ Paired successfully.",
+                "You can now chat with your Codex from this WhatsApp account.",
+                "Try: /status",
+              ].join("\n")
+            );
+          }
+          continue;
+        }
 
         const inbound: InboundMessage = {
           jid,
           messageId,
-          text,
+          text: trimmed.slice(0, this.config.maxInboundChars),
           timestampMs: timestampToMs(message.messageTimestamp),
         };
 
         try {
+          this.status.markMessageSeen();
+
+          const cmd = inbound.text.trim().toLowerCase();
+          if (cmd === "/status" || cmd === "status") {
+            await this.sendText(jid, this.formatStatusForWhatsApp());
+            continue;
+          }
+
+          if (cmd === "/help" || cmd === "help") {
+            await this.sendText(
+              jid,
+              [
+                "🟢 WhatsApp Codex Bridge",
+                "",
+                "Commands:",
+                "- /status  Show connection + pairing status",
+                "- /help    Show this help",
+                "",
+                "Chat:",
+                "- Send any message to get a reply.",
+              ].join("\n")
+            );
+            continue;
+          }
+
           const reply = await this.safeReply(inbound);
           if (!reply) continue;
           await this.sendText(jid, reply);
@@ -197,6 +251,27 @@ export class WhatsAppGateway {
         }
       }
     });
+  }
+
+  private formatStatusForWhatsApp(): string {
+    const s = this.status.getSnapshot();
+
+    const connection =
+      s.state === "connected"
+        ? "connected"
+        : s.state === "starting" || s.state === "awaiting_qr_scan"
+          ? "connecting"
+          : "disconnected";
+
+    const lines: string[] = ["📟 Status"];
+    lines.push(`connection: ${connection}`);
+    lines.push(`active: ${s.active ? "yes" : "no"}`);
+    lines.push(`paired: ${s.paired ? "yes" : "no"}`);
+    if (s.number) lines.push(`number: ${s.number}`);
+    if (s.jid) lines.push(`jid: ${s.jid}`);
+    if (s.lastMessageAt) lines.push(`last_message_at: ${s.lastMessageAt}`);
+    if (s.lastError) lines.push(`last_error: ${s.lastError}`);
+    return lines.join("\n");
   }
 
   private safeReply = async (msg: InboundMessage): Promise<string | null> => {

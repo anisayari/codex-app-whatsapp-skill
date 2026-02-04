@@ -32,6 +32,35 @@ function requireAuth(config: Config) {
   };
 }
 
+function isLoopbackHost(host: string): boolean {
+  const normalized = host.trim().toLowerCase();
+  return normalized === "127.0.0.1" || normalized === "localhost" || normalized === "::1";
+}
+
+function rateLimit(params: { windowMs: number; max: number }) {
+  const buckets = new Map<string, { count: number; resetAt: number }>();
+
+  return (req: Request, res: Response, next: () => void) => {
+    const now = Date.now();
+    const ip = req.ip || "unknown";
+
+    const bucket = buckets.get(ip);
+    if (!bucket || bucket.resetAt <= now) {
+      buckets.set(ip, { count: 1, resetAt: now + params.windowMs });
+      next();
+      return;
+    }
+
+    bucket.count += 1;
+    if (bucket.count > params.max) {
+      res.status(429).json({ error: "Rate limit exceeded" });
+      return;
+    }
+
+    next();
+  };
+}
+
 export function startHttpServer(params: {
   config: Config;
   status: StatusStore;
@@ -39,6 +68,10 @@ export function startHttpServer(params: {
   startedAt: Date;
 }): void {
   const { config, status, gateway, startedAt } = params;
+
+  if (!isLoopbackHost(config.host) && !config.adminToken) {
+    throw new Error("Refusing to bind HTTP to a non-local host without GATEWAY_ADMIN_TOKEN.");
+  }
 
   const app = express();
   app.disable("x-powered-by");
@@ -50,6 +83,8 @@ export function startHttpServer(params: {
       uptime_ms: Date.now() - startedAt.getTime(),
     });
   });
+
+  app.use(rateLimit({ windowMs: 60_000, max: 120 }));
 
   app.use(express.json({ limit: "256kb" }));
 
@@ -123,8 +158,8 @@ export function startHttpServer(params: {
     res.json({ ok: true, sample_message: msg });
   });
 
-  app.listen(config.port, () => {
+  app.listen(config.port, config.host, () => {
     // eslint-disable-next-line no-console
-    console.log(`HTTP listening on :${config.port}`);
+    console.log(`HTTP listening on ${config.host}:${config.port}`);
   });
 }

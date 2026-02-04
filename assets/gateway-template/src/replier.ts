@@ -1,5 +1,6 @@
 import type { Config } from "./config";
 import type { InboundMessage, ReplyMode } from "./types";
+import { createCodexReplier } from "./codex-replier";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -55,6 +56,10 @@ export function createReplier(config: Config): (msg: InboundMessage) => Promise<
 
   if (mode === "webhook") {
     return async (msg) => webhookReply(config, msg);
+  }
+
+  if (mode === "codex") {
+    return createCodexReplier(config);
   }
 
   return async (msg) => echoReply(msg);

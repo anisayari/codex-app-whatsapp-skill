@@ -23,16 +23,21 @@ Recommended options:
 - Copy the generated gateway folder to the server (rsync/scp)
 - Or commit it to a dedicated gateway repo and deploy from git
 
+If your goal is “talk to my Codex on my computer”, run the gateway on the **same machine** as Codex.
+
 ## 4) Run And Onboard
 
 On the server:
 
 - `cp .env.example .env`
 - Set `GATEWAY_ADMIN_TOKEN` (recommended)
+- Set `REPLY_MODE=codex` (recommended for “talk to my Codex”)
+- Ensure the Codex CLI is installed and logged in (`codex login`)
 - `npm install`
 - `npm run dev`
 - In the CLI, run `/init` → accept risk → scan QR
-- Run `/status`
+- Pair your phone (one-time): send `PAIR <code>` to the gateway number
+- Run `/status` (or send `/status` on WhatsApp)
 
 ## 5) Verify /status From Outside (optional)
 

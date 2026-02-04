@@ -22,6 +22,11 @@ function printHelp(): void {
   console.log("  /update  git pull (if this folder is a git repo)");
   // eslint-disable-next-line no-console
   console.log("  /exit    Quit\n");
+
+  // eslint-disable-next-line no-console
+  console.log("Pairing:");
+  // eslint-disable-next-line no-console
+  console.log("  After /init, send: PAIR <code> from your phone to the gateway number.\n");
 }
 
 async function askYesNo(rl: readline.Interface, prompt: string): Promise<boolean> {
@@ -112,6 +117,8 @@ function printStatus(status: StatusStore): void {
   console.log(formatStatusLine("connection:", connection));
   // eslint-disable-next-line no-console
   console.log(formatStatusLine("active:", s.active ? "yes" : "no"));
+  // eslint-disable-next-line no-console
+  console.log(formatStatusLine("paired:", s.paired ? "yes" : "no"));
   if (s.number) {
     // eslint-disable-next-line no-console
     console.log(formatStatusLine("number:", s.number));
@@ -135,6 +142,10 @@ function printStatus(status: StatusStore): void {
   if (s.lastError) {
     // eslint-disable-next-line no-console
     console.log(formatStatusLine("last error:", s.lastError));
+  }
+  if (s.ownerJids.length > 0) {
+    // eslint-disable-next-line no-console
+    console.log(formatStatusLine("owner jids:", s.ownerJids.join(", ")));
   }
   // eslint-disable-next-line no-console
   console.log("");
@@ -206,6 +217,16 @@ export function startCli(params: {
         await params.gateway.start();
         // eslint-disable-next-line no-console
         console.log("If a QR is required, it will be displayed above.\n");
+
+        const snapshot = params.status.getSnapshot();
+        if (!snapshot.paired) {
+          // eslint-disable-next-line no-console
+          console.log("🔐 Pair your phone (one-time):");
+          // eslint-disable-next-line no-console
+          console.log(`Send this message to the gateway number: PAIR ${params.gateway.getPairingCode()}`);
+          // eslint-disable-next-line no-console
+          console.log("Once paired, you can chat normally. Try /status.\n");
+        }
       } finally {
         busy = false;
       }

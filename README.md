@@ -20,6 +20,8 @@ This mirrors an “OpenClaw-style” gateway: a lightweight WhatsApp relay that 
 
 This approach uses **WhatsApp Web** (non-official). It is more fragile and can be subject to account limits/bans if WhatsApp changes policies or detects automation. Use a **dedicated number** and accept the risk.
 
+Security checklist: see `references/security.md`.
+
 ## Install in Codex
 
 This repository is a single skill folder. To install it in the Codex app, clone it into your Codex skills directory:
@@ -61,12 +63,15 @@ npm install
 npm run dev
 ```
 
+For “talk to my Codex”, keep `REPLY_MODE=codex` in `.env` and make sure the Codex CLI is logged in (`codex login`).
+
 Then in the gateway CLI:
 
 1. ▶️ Run `/init`
 2. ⚠️ Accept risk (yes/no)
 3. ✅ Scan the QR
-4. 📟 Run `/status`
+4. 🔐 Pair your phone (one-time): send `PAIR <code>` to the gateway number
+5. 📟 Run `/status` (or send `/status` on WhatsApp)
 
 ## Remote Ops (Optional)
 
@@ -106,6 +111,7 @@ Example risk notice copy:
 - `references/init-onboarding.md` — `/init` flow + QR display guidance
 - `references/cli-commands.md` — `/update` and `/status` command UX
 - `references/quickstart.md` — simplest end-to-end setup
+- `references/security.md` — security hardening checklist
 - `scripts/init_gateway.sh` — generate the gateway template project
 - `scripts/update_skill.sh` — update the skill installation via git
 - `scripts/gateway_init.sh` — call gateway `/init` then display the QR from `/qr`

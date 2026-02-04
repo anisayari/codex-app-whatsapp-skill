@@ -3,8 +3,10 @@
 Non-official WhatsApp Web gateway with:
 
 - ✅ `/init` onboarding (explicit risk consent + QR)
+- 🔐 owner pairing (send: `PAIR <code>` from your phone)
 - 📟 `/status` command + `GET /status`
 - 🔁 `/update` (git pull) if this folder is a git repo
+- 🤖 `REPLY_MODE=codex` to talk to your local Codex CLI
 - 🌐 HTTP endpoints for basic ops (`/health`, `/status`, `/qr`, `/init`, `/send`)
 
 ## Risk
@@ -25,7 +27,8 @@ Then in the CLI:
 1. Run `/init`
 2. Type `yes`
 3. Scan the QR
-4. Run `/status`
+4. Pair your phone (one-time): send `PAIR <code>` to the gateway number
+5. Run `/status`
 
 ## Quick Start (Docker)
 
@@ -56,3 +59,5 @@ Endpoints:
 
 - You must run `/init` (or `POST /init`) before the gateway starts a WhatsApp session.
 - If the session gets logged out, you will need to re-run `/init` and scan a new QR.
+- For security, the gateway ignores all WhatsApp messages until it is paired (or `OWNER_*` env vars are set).
+- If you bind `HOST` to a non-local address, you must set `GATEWAY_ADMIN_TOKEN`.

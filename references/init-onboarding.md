@@ -6,18 +6,22 @@ Use this reference when the user wants an OpenClaw-style onboarding that starts 
 - Provide an explicit consent step (Yes/No) before any WhatsApp session is created.
 - Present the QR code only after consent is captured.
 - Avoid silent behavior; show clear status messages in each step.
+- Require owner pairing (or allowlist) before responding to WhatsApp messages.
 
 ## Suggested /init State Machine
 1. `idle`
 2. `awaiting_consent`
 3. `awaiting_qr_scan`
 4. `connected`
-5. `failed`
+5. `awaiting_owner_pair`
+6. `failed`
 
 ## CLI Behavior (Example)
 - ▶️ User runs `/init`
 - ⚠️ CLI shows risk notice and asks for confirmation
 - ✅ If user confirms, start Baileys and show QR
+- 🔐 After connect, show a pairing code (if no allowlist configured)
+- 📱 User sends `PAIR <code>` from their phone to the gateway number
 - ❌ If user declines, exit with a clear message
 
 ## Example Copy (Risk Notice)
@@ -53,6 +57,12 @@ if (state === 'awaiting_qr_scan') {
 // on connected
 state = 'connected';
 print('Connected.');
+
+// owner pairing (recommended)
+if (!hasOwnerConfigured()) {
+  state = 'awaiting_owner_pair';
+  print('Send: PAIR <code> from your phone');
+}
 ```
 
 ## API Variant

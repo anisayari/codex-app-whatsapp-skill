@@ -26,6 +26,8 @@ Build a separate WhatsApp Web gateway (Baileys) that receives and sends WhatsApp
 ## Quick Start (Template)
 - Use `scripts/init_gateway.sh --path <output-dir>` to generate a ready-to-run gateway project from `assets/gateway-template`.
 - Deploy the generated gateway folder to a separate server, then run `/init` to authenticate.
+- For “talk to my Codex on my computer”, run the gateway on the same machine and set `REPLY_MODE=codex`.
+- Pair the owner account once: after `/init`, send `PAIR <code>` from your phone to the gateway number.
 - If the gateway HTTP API is exposed, use `scripts/gateway_init.sh` and `scripts/gateway_status.sh` for remote onboarding and checks.
 
 Reference: `references/quickstart.md`.
@@ -71,6 +73,9 @@ Reference: `references/cli-commands.md`.
 - Require explicit opt-in and implement STOP or human escalation.
 - Avoid storing media unless required; prefer text only.
 - Do not hardcode secrets; load from environment variables.
+- Restrict access: use owner pairing (`PAIR <code>`) or `OWNER_*` allowlists; ignore unknown senders.
+- If exposing HTTP, bind to localhost by default and require `GATEWAY_ADMIN_TOKEN` for admin endpoints.
+ - For a checklist, see `references/security.md`.
 
 ## References
 - `references/baileys-gateway.md` for Baileys setup, auth state, and message events.
@@ -80,3 +85,4 @@ Reference: `references/cli-commands.md`.
 - `references/init-onboarding.md` for the `/init` onboarding flow and QR display.
 - `references/cli-commands.md` for `/update` and `/status` commands.
 - `references/quickstart.md` for the simplest end-to-end setup.
+- `references/security.md` for hardening guidance.

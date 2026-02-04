@@ -1,4 +1,4 @@
-export type ReplyMode = "echo" | "webhook";
+export type ReplyMode = "echo" | "webhook" | "codex";
 
 export type ConnectionState =
   | "idle"
@@ -19,6 +19,8 @@ export interface InboundMessage {
 export interface StatusSnapshot {
   state: ConnectionState;
   active: boolean;
+  paired: boolean;
+  ownerJids: string[];
   jid: string | null;
   number: string | null;
   pushName: string | null;
@@ -32,6 +34,8 @@ export interface StatusSnapshot {
 export interface PublicStatus {
   connection: "connected" | "connecting" | "disconnected";
   active: boolean;
+  paired?: boolean;
+  owner_jids?: string[];
   jid?: string;
   number?: string;
   push_name?: string;
