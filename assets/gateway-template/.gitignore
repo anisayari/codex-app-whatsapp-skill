@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+
+# build
+/dist/
+
+# local env
+.env
+
+# WhatsApp auth + local state
+/auth_state/
+
+# logs
+*.log
+
+# OS
+.DS_Store
