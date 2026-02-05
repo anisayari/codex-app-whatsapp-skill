@@ -138,3 +138,11 @@ If you want me to implement the actual gateway server and deploy it, tell me:
 - TypeScript or JavaScript
 - Hosting target (VM, Docker, etc.)
 - Storage choice (memory, SQLite, Postgres)
+
+## Development
+
+Run the repo checks locally:
+
+```bash
+bash scripts/test_skill.sh
+```
